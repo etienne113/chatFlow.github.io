@@ -17,7 +17,7 @@ const createChatLi = (message, className) => {
 }
 
 const generateResponse = (chatElement) => {
-    const API_URL = "http://127.0.0.1:5000/upload";
+    const API_URL = "http://127.0.0.1:5000/get-answer";
     const messageElement = chatElement.querySelector("p");
 
     // Define the properties and message for the API request
