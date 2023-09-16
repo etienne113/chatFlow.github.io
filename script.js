@@ -16,11 +16,11 @@ function fetchAndInjectExternalHTML(){
             return response.text(); // Convert response to text
         })
         .then(htmlContent => {
-            chatbotToggler = document.querySelector(".chatbot-toggler");
-            closeBtn = document.querySelector(".close-btn");
-            chatbox = document.querySelector(".chatbox");
-            chatInput = document.querySelector(".chat-input textarea");
-            sendChatBtn = document.querySelector(".chat-input span");
+            chatbotToggler = htmlContent.querySelector(".chatbot-toggler");
+            closeBtn = htmlContent.querySelector(".close-btn");
+            chatbox = htmlContent.querySelector(".chatbox");
+            chatInput = htmlContent.querySelector(".chat-input textarea");
+            sendChatBtn = htmlContent.querySelector(".chat-input span");
         })
         .catch(error => {
             console.error('Error fetching external HTML:', error);
