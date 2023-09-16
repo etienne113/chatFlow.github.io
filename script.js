@@ -5,7 +5,6 @@ const chatInput = document.querySelector(".chat-input textarea");
 const sendChatBtn = document.querySelector(".chat-input span");
 
 let userMessage = null; // Variable to store user's message
-const API_KEY = "PASTE-YOUR-API-KEY"; // Paste your API key here
 const inputInitHeight = chatInput.scrollHeight;
 
 const createChatLi = (message, className) => {
@@ -16,6 +15,19 @@ const createChatLi = (message, className) => {
     chatLi.querySelector("p").textContent = message;
     return chatLi; // return chat <li> element
 }
+// Create a function to load CSS files
+function loadCSS(url) {
+    const linkElement = document.createElement("link");
+    linkElement.rel = "stylesheet";
+    linkElement.href = url;
+    document.head.appendChild(linkElement);
+}
+
+// Load the CSS files
+loadCSS("https://etienne113.github.io/chatFlow.github.io/style.css");
+loadCSS("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0");
+loadCSS("https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,1,0");
+
 
 const generateResponse = (chatElement) => {
     const API_URL = "http://127.0.0.1:5000/upload";
@@ -41,7 +53,6 @@ const generateResponse = (chatElement) => {
         messageElement.textContent = "Oops! Something went wrong. Please try again.";
     }).finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
 }
-
 
 const handleChat = () => {
     userMessage = chatInput.value.trim(); // Get user entered message and remove extra whitespace
