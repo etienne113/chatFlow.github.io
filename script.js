@@ -1,33 +1,12 @@
+const chatbotToggler = document.querySelector(".chatbot-toggler");
+const closeBtn = document.querySelector(".close-btn");
+const chatbox = document.querySelector(".chatbox");
+const chatInput = document.querySelector(".chat-input textarea");
+const sendChatBtn = document.querySelector(".chat-input span");
+
 let userMessage = null; // Variable to store user's message
-let chatbotToggler;
-let closeBtn
-let chatbox;
-let chatInput;
-let sendChatBtn;
-let inputInitHeight;
+const inputInitHeight = chatInput.scrollHeight;
 
-
-function fetchAndInjectExternalHTML(){
-    fetch('https://etienne113.github.io/chatFlow.github.io/index.html')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.text(); // Convert response to text
-        })
-        .then(htmlContent => {
-            chatbotToggler = htmlContent.querySelector(".chatbot-toggler");
-            closeBtn = htmlContent.querySelector(".close-btn");
-            chatbox = htmlContent.querySelector(".chatbox");
-            chatInput = htmlContent.querySelector(".chat-input textarea");
-            sendChatBtn = htmlContent.querySelector(".chat-input span");
-        })
-        .catch(error => {
-            console.error('Error fetching external HTML:', error);
-        });
-    inputInitHeight = chatInput.scrollHeight;
-}
-fetchAndInjectExternalHTML();
 const createChatLi = (message, className) => {
     // Create a chat <li> element with passed message and className
     const chatLi = document.createElement("li");
