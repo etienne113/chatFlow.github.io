@@ -21,9 +21,6 @@ function fetchAndInjectExternalHTML(){
             chatbox = document.querySelector(".chatbox");
             chatInput = document.querySelector(".chat-input textarea");
             sendChatBtn = document.querySelector(".chat-input span");
-            // Inject the fetched HTML content into a container on your page
-            const container = document.getElementById('chatbot');
-            container.innerHTML = htmlContent;
         })
         .catch(error => {
             console.error('Error fetching external HTML:', error);
