@@ -1,4 +1,3 @@
-
 // chatbot.js
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -36,18 +35,22 @@ document.addEventListener("DOMContentLoaded", function () {
             })
         }
 
-        // Send POST request to API, get response and set the reponse as paragraph text
-        fetch(API_URL, requestOptions).then(res => res.json()).then(r => {
-            messageElement.textContent = r.answer.trim()
-        }).catch(() => {
-            messageElement.classList.add("error");
-            messageElement.textContent = "Oops! Something went wrong. Please try again.";
-        }).finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
+        // Send POST request to API, get response and set the response as paragraph text
+        fetch(API_URL, requestOptions)
+            .then(res => res.json())
+            .then(r => {
+                messageElement.textContent = r.answer.trim()
+            })
+            .catch(() => {
+                messageElement.classList.add("error");
+                messageElement.textContent = "Oops! Something went wrong. Please try again.";
+            })
+            .finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
     }
 
     const handleChat = () => {
         userMessage = chatInput.value.trim(); // Get user entered message and remove extra whitespace
-        if(!userMessage) return;
+        if (!userMessage) return;
 
         // Clear the input textarea and set its height to default
         chatInput.value = "";
@@ -75,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
     chatInput.addEventListener("keydown", (e) => {
         // If Enter key is pressed without Shift key and the window
         // width is greater than 800px, handle the chat
-        if(e.key === "Enter" && !e.shiftKey && window.innerWidth > 800) {
+        if (e.key === "Enter" && !e.shiftKey && window.innerWidth > 800) {
             e.preventDefault();
             handleChat();
         }
@@ -85,9 +88,9 @@ document.addEventListener("DOMContentLoaded", function () {
     closeBtn.addEventListener("click", () => document.body.classList.remove("show-chatbot"));
     chatbotToggler.addEventListener("click", () => document.body.classList.toggle("show-chatbot"));
 
-    // Example: Create a chatbot container
+    // Add your provided HTML structure to the chatbot container
     const chatbotContainer = document.createElement("div");
-    chatbotContainer.className = "chatbot";
+    chatbotContainer.classList.add("chatbot");
     chatbotContainer.innerHTML = `
         <header>
             <h2>Chatbot</h2>
