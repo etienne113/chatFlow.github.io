@@ -80,3 +80,33 @@ chatInput.addEventListener("keydown", (e) => {
 sendChatBtn.addEventListener("click", handleChat);
 closeBtn.addEventListener("click", () => document.body.classList.remove("show-chatbot"));
 chatbotToggler.addEventListener("click", () => document.body.classList.toggle("show-chatbot"));
+// chatbot.js
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Your chatbot logic goes here
+
+    // Example: Create a chatbot container
+    var chatbotContainer = document.createElement("div");
+    chatbotContainer.className = "chatbot";
+    chatbotContainer.innerHTML = `
+        <header>
+            <h2>Chatbot</h2>
+            <span class="close-btn material-symbols-outlined">close</span>
+        </header>
+        <ul class="chatbox">
+            <li class="chat incoming">
+                <span class="material-symbols-outlined">smart_toy</span>
+                <p>Hi there 👋<br>How can I help you today?</p>
+            </li>
+        </ul>
+        <div class="chat-input">
+            <label>
+                <textarea placeholder="Enter a message..." spellcheck="false" required></textarea>
+            </label>
+            <span id="send-btn" class="material-symbols-rounded">send</span>
+        </div>
+    `;
+
+    // Append the chatbot container to the body
+    document.body.appendChild(chatbotContainer);
+});
