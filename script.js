@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const generateResponse = (chatElement) => {
-        const API_URL = 'https://backendservice-6ibi-main-eww77kebra-wm.a.run.app/';
+        const API_URL = 'https://backendservice-6ibi-main-eww77kebra-wm.a.run.app/get-answer';
         const messageElement = chatElement.querySelector('p');
 
         // Display the loader while waiting for the response
