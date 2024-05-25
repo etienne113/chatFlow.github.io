@@ -1,7 +1,5 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const container = document.createElement('div');
+const container = document.createElement('div');
     document.body.appendChild(container);
-
     container.innerHTML = `
                 <button class="chatbot-toggler">
                     <span class="material-symbols-rounded">mode_comment</span>
@@ -15,12 +13,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     <ul class="chatbox">
                         <li class="chat incoming">
                             <span class="material-symbols-outlined">psychology</span>
-                            <p>Hi there!<br>First of all, you need to choose your department 👇🏾</p>
+                            <p>Hi there!<br>First of all, you need to choose your orgunit 👇🏾</p>
                         </li>
                         <br>
                         <li class="chat incoming">
                             <span class="material-symbols-outlined">psychology</span>
-                            <p><input type="radio" name="options" id="Software engineering">  Software engineering <br><input type="radio" name="options" id="DevOps">  DevOps <br><input type="radio" name="options" id="Data Management"> Data Management <br><input type="radio" name="options" id="Personal Management"> Personal Management <br> <input type="radio" name="options" id="Project Management"> Project Management</p>
+                            <p><input type="radio" name="options" id="management">  Management <br><input type="radio" name="options" id="personal">  Personal </p>
                         </li>
                     </ul>
                     <div class="chat-input">
@@ -54,14 +52,11 @@ document.addEventListener('DOMContentLoaded', function () {
     document.head.appendChild(viewportMeta);
 
 
-    // Now you can select elements within the container
     const chatbotToggler = container.querySelector('.chatbot-toggler');
     const closeBtn = container.querySelector('.close-btn');
     const chatbox = container.querySelector('.chatbox');
     const chatInput = container.querySelector('.chat-input textarea');
-    const sendChatBtn = container.querySelector('#send-btn'); // Use querySelector instead of getElementById
-
-
+    const sendChatBtn = container.querySelector('#send-btn');
     let userMessage = null;
     const inputInitHeight = chatInput.scrollHeight;
 
@@ -92,46 +87,86 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    const generateResponse = (chatElement) => {
-        const API_URL = 'https://backendservice-6ibi-main-eww77kebra-wm.a.run.app/get-answer';
-        const messageElement = chatElement.querySelector('p');
+function generateTabId(userId) {
+    return `${userId}_${Math.random().toString(36).substring(2, 15)}`;
+}
+function notifyServerAboutNewTab(chatElement) {
 
-        // Display the loader while waiting for the response
-        const loader = createLoader();
-        chatbox.appendChild(loader);
-        chatbox.scrollTo(0, chatbox.scrollHeight);
+    const userId = 'user-1';
+    let chatId = window.name;
 
-        // Define the properties and message for the API request
-        const requestOptions = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                body: userMessage,
-                department: selectedOption,
-                mode: 'cors'
-            })
-        };
+    if (!chatId) {
+        chatId = generateTabId(userId);
+        window.name = chatId;
+    }
+    const formData = new FormData();
+    const API_URL = 'http://localhost:3000/get-answer'; // TODO : change the endpoint
+    const messageElement = chatElement.querySelector('p');
 
-        // Send POST request to API, get response and set the response as paragraph text
-        fetch(API_URL, requestOptions)
-            .then(res => res.json())
-            .then(r => {
-                messageElement.textContent = r.answer.trim();
-            })
-            .catch(() => {
-                messageElement.classList.add('error');
-                messageElement.textContent = 'Oops! Something went wrong. Please try again.';
-            })
-            .finally(() => {
-                // Remove the loader after receiving the response
-                chatbox.removeChild(loader);
-                chatbox.scrollTo(0, chatbox.scrollHeight);
-            });
+    const loader = createLoader();
+    chatbox.appendChild(loader);
+    chatbox.scrollTo(0, chatbox.scrollHeight);
+    formData.append('user_message', userMessage);
+    formData.append('orgunit', selectedOption);
+    formData.append('mode', 'cors');
+    formData.append('user_id', userId);
+    formData.append('chatId', chatId);
+
+    const requestOptions = {
+      /*  headers: {
+                'Content-Type': 'multipart/form-data',
+                "Authorization": `Bearer ${'BACKEND_ACCESS_API_KEY'}`,
+                'User_message': userMessage,
+            },*/
+        method: 'POST',
+        body: formData,
     };
 
-    const handleChat = () => {
+    fetch(API_URL, requestOptions)
+        .then(res => res.json())
+        .then(r => {
+            if(r.error){
+                messageElement.classList.add('error');
+                messageElement.textContent = r.error;
+            }
+            else if(r.success)
+                messageElement.textContent = r.success.trim();
+        })
+        .catch(error => {
+            messageElement.classList.add('error');
+            messageElement.textContent = error;
+        })
+        .finally(() => {
+            // Remove the loader after receiving the response
+            chatbox.removeChild(loader);
+            chatbox.scrollTo(0, chatbox.scrollHeight);
+        });
+
+}
+function handleReturnToOpenedTab() {
+    const userId = 'your_user_id';
+    const chatId = localStorage.getItem('chatId');
+    const storedData = localStorage.getItem(chatId);
+    if (storedData) {
+        console.log('User returned to the first tab. Stored data:', JSON.parse(storedData));
+    }
+    fetch('/new-tab', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            userId,
+            chatId,
+        }),
+    });
+}
+
+
+window.addEventListener('focus', notifyServerAboutNewTab);
+//window.addEventListener('focus', handleReturnToOpenedTab);
+
+const handleChat = () => {
         userMessage = chatInput.value.trim();
         if (!userMessage) return;
 
@@ -149,7 +184,8 @@ document.addEventListener('DOMContentLoaded', function () {
             chatbox.appendChild(incomingChatLi);
             chatbox.scrollTo(0, chatbox.scrollHeight);
             updateSelectedOption();
-            generateResponse(incomingChatLi);
+            //generateResponse(incomingChatLi);
+            notifyServerAboutNewTab(incomingChatLi);
         }, 600);
     };
 
@@ -177,4 +213,3 @@ document.addEventListener('DOMContentLoaded', function () {
         const rotateDeg = document.body.classList.contains('show-chatbot') ? 90 : 0;
         chatbotToggler.style.transform = `rotate(${rotateDeg}deg)`;
     });
-});
