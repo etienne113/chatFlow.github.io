@@ -18,12 +18,12 @@ const container = document.createElement('div');
                         <br>
                         <li class="chat incoming">
                             <span class="material-symbols-outlined">psychology</span>
-                            <p><input type="radio" name="options" id="management">  Management <br><input type="radio" name="options" id="personal">  Personal </p>
+                            <p><input type="radio" name="options" id="management">  Management <br><input type="radio" name="options" id="personal">  Personal <br><input type="radio" name="options" id=""> None </p>
                         </li>
                     </ul>
                     <div class="chat-input">
                         <label>
-                            <textarea placeholder="Looking forward to your question..." spellcheck="false" required></textarea>
+                            <textarea placeholder="Feel free to ask" spellcheck="false" required></textarea>
                         </label>
                         <span id="send-btn" class="material-symbols-rounded">send</span>
                     </div>
@@ -32,7 +32,7 @@ const container = document.createElement('div');
     // Create and append link elements for stylesheets
     const styleSheet1 = document.createElement('link');
     styleSheet1.rel = 'stylesheet';
-    styleSheet1.href = 'https://etienne113.github.io/chatFlow.github.io/style.css';
+    styleSheet1.href = '/static/css/styles.css';
     document.head.appendChild(styleSheet1);
 
     const styleSheet2 = document.createElement('link');
@@ -90,8 +90,26 @@ const container = document.createElement('div');
 function generateTabId(userId) {
     return `${userId}_${Math.random().toString(36).substring(2, 15)}`;
 }
-function notifyServerAboutNewTab(chatElement) {
 
+async function fetchToken() {
+    try {
+        const response = await fetch('https://chatflow--dev.azurewebsites.net/api/get-token', {
+            method: 'POST'
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to obtain token js');
+        }
+
+        const data = await response.json();
+        return data.access_token;
+    } catch (error) {
+        console.error('Error fetching token:', error);
+        throw error;
+    }
+}
+
+async function notifyServerAboutNewTab(chatElement) {
     const userId = 'user-1';
     let chatId = window.name;
 
@@ -99,8 +117,9 @@ function notifyServerAboutNewTab(chatElement) {
         chatId = generateTabId(userId);
         window.name = chatId;
     }
+
     const formData = new FormData();
-    const API_URL = 'http://localhost:3000/get-answer'; // TODO : change the endpoint
+    const API_URL = 'https://chatflow--dev.azurewebsites.net/answer';
     const messageElement = chatElement.querySelector('p');
 
     const loader = createLoader();
@@ -112,37 +131,35 @@ function notifyServerAboutNewTab(chatElement) {
     formData.append('user_id', userId);
     formData.append('chatId', chatId);
 
-    const requestOptions = {
-      /*  headers: {
-                'Content-Type': 'multipart/form-data',
-                "Authorization": `Bearer ${'BACKEND_ACCESS_API_KEY'}`,
-                'User_message': userMessage,
-            },*/
-        method: 'POST',
-        body: formData,
-    };
+    try {
+        const token = await fetchToken();
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            body: formData
+        };
 
-    fetch(API_URL, requestOptions)
-        .then(res => res.json())
-        .then(r => {
-            if(r.error){
-                messageElement.classList.add('error');
-                messageElement.textContent = r.error;
-            }
-            else if(r.success)
-                messageElement.textContent = r.success.trim();
-        })
-        .catch(error => {
+        const response = await fetch(API_URL, requestOptions);
+        const result = await response.json();
+
+        if (result.error) {
             messageElement.classList.add('error');
-            messageElement.textContent = error;
-        })
-        .finally(() => {
-            // Remove the loader after receiving the response
-            chatbox.removeChild(loader);
-            chatbox.scrollTo(0, chatbox.scrollHeight);
-        });
-
+            messageElement.textContent = result.error;
+        } else if (result.success) {
+            messageElement.textContent = result.success.trim();
+        }
+    } catch (error) {
+        messageElement.classList.add('error');
+        messageElement.textContent = error.message;
+    } finally {
+        // Remove the loader after receiving the response
+        chatbox.removeChild(loader);
+        chatbox.scrollTo(0, chatbox.scrollHeight);
+    }
 }
+
 function handleReturnToOpenedTab() {
     const userId = 'your_user_id';
     const chatId = localStorage.getItem('chatId');
