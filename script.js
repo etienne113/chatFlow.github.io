@@ -32,7 +32,7 @@ const container = document.createElement('div');
     // Create and append link elements for stylesheets
     const styleSheet1 = document.createElement('link');
     styleSheet1.rel = 'stylesheet';
-    styleSheet1.href = '/static/css/styles.css';
+    styleSheet1.href = 'https://etienne113.github.io/chatFlow.github.io/style.css';
     document.head.appendChild(styleSheet1);
 
     const styleSheet2 = document.createElement('link');
@@ -91,24 +91,6 @@ function generateTabId(userId) {
     return `${userId}_${Math.random().toString(36).substring(2, 15)}`;
 }
 
-async function fetchToken() {
-    try {
-        const response = await fetch('https://chatflow--dev.azurewebsites.net/api/get-token', {
-            method: 'POST'
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to obtain token js');
-        }
-
-        const data = await response.json();
-        return data.access_token;
-    } catch (error) {
-        console.error('Error fetching token:', error);
-        throw error;
-    }
-}
-
 async function notifyServerAboutNewTab(chatElement) {
     const userId = 'user-1';
     let chatId = window.name;
@@ -132,12 +114,8 @@ async function notifyServerAboutNewTab(chatElement) {
     formData.append('chatId', chatId);
 
     try {
-        const token = await fetchToken();
         const requestOptions = {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
             body: formData
         };
 
