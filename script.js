@@ -32,7 +32,7 @@ const container = document.createElement('div');
     // Create and append link elements for stylesheets
     const styleSheet1 = document.createElement('link');
     styleSheet1.rel = 'stylesheet';
-    styleSheet1.href = 'https://etienne113.github.io/chatFlow.github.io/style.css';
+    styleSheet1.href = '/static/css/styles.css';
     document.head.appendChild(styleSheet1);
 
     const styleSheet2 = document.createElement('link');
@@ -114,8 +114,12 @@ async function notifyServerAboutNewTab(chatElement) {
     formData.append('chatId', chatId);
 
     try {
+        const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ikg5bmo1QU9Tc3dNcGhnMVNGeDdqYVYtbEI5dyIsImtpZCI6Ikg5bmo1QU9Tc3dNcGhnMVNGeDdqYVYtbEI5dyJ9.eyJhdWQiOiJhcGk6Ly8xNWZkNDViZS1jZDNjLTQxMTQtYTFhZC0xOWYwNzk1NjQ5ZjUiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83NGE0MGE0Zi1lNDkwLTRjZTItOTk2NS1lYjA4YWM5YzY4ZmUvIiwiaWF0IjoxNzI2MDY3MTc0LCJuYmYiOjE3MjYwNjcxNzQsImV4cCI6MTcyNjA3MTY0MywiYWNyIjoiMSIsImFpbyI6IkFWUUFxLzhYQUFBQWxSSHZhWEl5eFVta3ZJYWVqWENYUnFsamZMRUIvRGhyS0dlU2xqQXFiaGFPa2pWd0VDaXM4MXp6anBQUncvL05HQXdxVVd5aDhlYWpGVVFtY3NaamJ1Nm9YQlRsRG81VytBeG13L2xlLzFzPSIsImFtciI6WyJwd2QiLCJtZmEiXSwiYXBwaWQiOiIxNWZkNDViZS1jZDNjLTQxMTQtYTFhZC0xOWYwNzk1NjQ5ZjUiLCJhcHBpZGFjciI6IjEiLCJnaXZlbl9uYW1lIjoiRXRpZW5uZSIsImlwYWRkciI6IjE4NS41LjguMTE5IiwibmFtZSI6IkV0aWVubmUgS2FuaW9ubWVuaSIsIm9pZCI6IjQzYzljYWQwLTQ5M2ItNGM5Ny05ZTc0LTY3MzdkZGRiNzExMiIsInJoIjoiMC5BUjhBVHdxa2RKRGs0a3laWmVzSXJKeG9fcjVGX1JVOHpSUkJvYTBaOEhsV1NmVWZBSWsuIiwic2NwIjoidXNlcl9pbXBlcnNvbmF0aW9uIiwic3ViIjoiakJITE9UMTFCWExfZ2N5WTVtUTFyUTdXZGlvd2pJWGU4M2NFcFByMzN5SSIsInRpZCI6Ijc0YTQwYTRmLWU0OTAtNGNlMi05OTY1LWViMDhhYzljNjhmZSIsInVuaXF1ZV9uYW1lIjoiZXRpZW5uZS5rYW5pb25tZW5pQGtyYWVtZXItZXhwZXJ0cy5kZSIsInVwbiI6ImV0aWVubmUua2FuaW9ubWVuaUBrcmFlbWVyLWV4cGVydHMuZGUiLCJ1dGkiOiJGZkg5cFdkNWZVcU4xRVNUZkh0NkFBIiwidmVyIjoiMS4wIn0.QZW0DxVf6AREk8wWpT2N2c9OtFlAVMYXWXdDJ_MI1EiHGs-WH9K5Ve1w6KlpeiFiRUIJHRgBwaPhdfk5lCRnKr_DIw0Ua-UFQFT6Iu3vVrxhj9j2T7N4KnmBl-61nOyokX7dnqfeu0J4cD3OwE0Q-2bb5GVFYIl7iO55zzMPwNjvfM8MUFGM4AmOX78fvx6oqUN7XuyqFVtEo4ZYtz9LUgw62s7N3yyRI7gBqGPbKFCo97DG3xcBYpF3M31nPcoJjMMmrqu2tzs24nlM4bApEYbyseb96MvuIqoOnkSYarZpqei1cV4FN_cFERkcVz6t_4C_mCneYPdvp7YJJJTYEA';
         const requestOptions = {
             method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
             body: formData
         };
 
