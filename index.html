@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<!-- Coding By CodingNepal - www.codingnepalweb.com -->
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot</title>
-    <link rel="stylesheet" href="https://etienne113.github.io/chatFlow.github.io/styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-<div id="container"><!-- Add a container element here -->
-    <!-- Your dynamically generated HTML will be placed here by JavaScript -->
+<div id="container">
+
 </div>
-<script src="https://etienne113.github.io/chatFlow.github.io/script.js" defer></script>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
