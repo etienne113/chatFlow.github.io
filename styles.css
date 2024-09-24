@@ -37,7 +37,7 @@ body.show-chatbot .chatbot-toggler span:first-child  {
     opacity: 0;
 }
 body.show-chatbot .chatbot-toggler span:last-child {
-    opacity: 8;
+    opacity: 1;
 }
 .chatbot {
     position: fixed;
@@ -81,7 +81,7 @@ header h2 {
 }
 .chatbot .chatbox {
     overflow-y: auto;
-    height: 710px;
+    height: 500px;
     padding: 30px 20px 100px;
 }
 .chatbot :where(.chatbox, textarea)::-webkit-scrollbar {
@@ -225,3 +225,62 @@ header h2 {
     }
 }
 
+/* Additional styles for the login form */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.login-form label {
+    font-size: 1rem;
+    color: #203ca9;
+}
+
+.login-form input[type="email"],
+.login-form input[type="password"] {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333;
+    background: #f9f9f9;
+    transition: border-color 0.3s ease;
+}
+
+.login-form input[type="email"]:focus,
+.login-form input[type="password"]:focus {
+    border-color: #46de7e;
+    outline: none;
+    background: #fff;
+}
+
+.login-form button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #46de7e;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.login-form button:hover {
+    background: #36c765;
+}
+
+.login-form .error-message {
+    color: #721c24;
+    background: #f8d7da;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    text-align: center;
+}
