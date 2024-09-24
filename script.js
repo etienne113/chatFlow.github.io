@@ -32,7 +32,7 @@ const container = document.createElement('div');
     // Create and append link elements for stylesheets
     const styleSheet1 = document.createElement('link');
     styleSheet1.rel = 'stylesheet';
-    styleSheet1.href = 'https://etienne113.github.io/chatFlow.github.io/styles.css';
+    styleSheet1.href = '/static/css/styles.css';
     document.head.appendChild(styleSheet1);
 
     const styleSheet2 = document.createElement('link');
@@ -90,8 +90,8 @@ const container = document.createElement('div');
 function generateTabId(userId) {
     return `${userId}_${Math.random().toString(36).substring(2, 15)}`;
 }
+function notifyServerAboutNewTab(chatElement) {
 
-async function notifyServerAboutNewTab(chatElement) {
     const userId = 'user-1';
     let chatId = window.name;
 
@@ -99,9 +99,8 @@ async function notifyServerAboutNewTab(chatElement) {
         chatId = generateTabId(userId);
         window.name = chatId;
     }
-
     const formData = new FormData();
-    const API_URL = 'https://chatflow--dev.azurewebsites.net/answer';
+    const API_URL = 'https://chatflow-eon-dev.azurewebsites.net/answer'; // TODO : change the endpoint
     const messageElement = chatElement.querySelector('p');
 
     const loader = createLoader();
@@ -113,35 +112,32 @@ async function notifyServerAboutNewTab(chatElement) {
     formData.append('user_id', userId);
     formData.append('chatId', chatId);
 
-    try {
-        const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ikg5bmo1QU9Tc3dNcGhnMVNGeDdqYVYtbEI5dyIsImtpZCI6Ikg5bmo1QU9Tc3dNcGhnMVNGeDdqYVYtbEI5dyJ9.eyJhdWQiOiJhcGk6Ly8xNWZkNDViZS1jZDNjLTQxMTQtYTFhZC0xOWYwNzk1NjQ5ZjUiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83NGE0MGE0Zi1lNDkwLTRjZTItOTk2NS1lYjA4YWM5YzY4ZmUvIiwiaWF0IjoxNzI2MDcxMjYxLCJuYmYiOjE3MjYwNzEyNjEsImV4cCI6MTcyNjA3NjA0NCwiYWNyIjoiMSIsImFpbyI6IkFUUUF5LzhYQUFBQS81SnBOc1JPMVFONk13Sm4wSkMzYzFuM0hhWmNwUkNHc2oyYzZ2WUc2VkNoNnBjN21UNnI4dmEwRElmc3kwdGQiLCJhbXIiOlsicHdkIl0sImFwcGlkIjoiMTVmZDQ1YmUtY2QzYy00MTE0LWExYWQtMTlmMDc5NTY0OWY1IiwiYXBwaWRhY3IiOiIxIiwiZ2l2ZW5fbmFtZSI6IkV0aWVubmUiLCJpcGFkZHIiOiIxODUuNS44LjExOSIsIm5hbWUiOiJFdGllbm5lIEthbmlvbm1lbmkiLCJvaWQiOiI0M2M5Y2FkMC00OTNiLTRjOTctOWU3NC02NzM3ZGRkYjcxMTIiLCJyaCI6IjAuQVI4QVR3cWtkSkRrNGt5Wlplc0lySnhvX3I1Rl9SVTh6UlJCb2EwWjhIbFdTZlVmQUlrLiIsInNjcCI6InVzZXJfaW1wZXJzb25hdGlvbiIsInN1YiI6ImpCSExPVDExQlhMX2djeVk1bVExclE3V2Rpb3dqSVhlODNjRXBQcjMzeUkiLCJ0aWQiOiI3NGE0MGE0Zi1lNDkwLTRjZTItOTk2NS1lYjA4YWM5YzY4ZmUiLCJ1bmlxdWVfbmFtZSI6ImV0aWVubmUua2FuaW9ubWVuaUBrcmFlbWVyLWV4cGVydHMuZGUiLCJ1cG4iOiJldGllbm5lLmthbmlvbm1lbmlAa3JhZW1lci1leHBlcnRzLmRlIiwidXRpIjoiWlZzbWVqeDZHME9ZVXVaMUpyQ1hBQSIsInZlciI6IjEuMCJ9.AipV9VU-0TgRjtMMK_7MVKUwvE0bdAgKH_cGXf5gMLD0VKLKX3h-BbdVgu09UtBr7NCV9ibuJF87eaoXnMw_kCQ6n2jzgd6hDdeBSevyU7E_C1lBOwPu5wgPcfPcjDhr68m2JkLyK7yhkh8_lJebMhs-MTwDTQRpQIOFiTEaXrUNTmYB6zYav3BUb3IsQeUj3Qco4uJOqHpO589j9ZIpkeeCwLlxCub5TqYpVxNe0ea8owo61rbZW5xh1TtMGWzW1KDaUZbWAgEJo4Cxo0boS0qsw_lUdshZqXswVp9wicgQWxiSfbwZfOaompPS5Ljj1pb01CQFbB92wer1-f6QnQ';
-        const requestOptions = {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-            body: formData
-        };
+    const requestOptions = {
+        method: 'POST',
+        body: formData,
+    };
 
-        const response = await fetch(API_URL, requestOptions);
-        const result = await response.json();
-
-        if (result.error) {
+    fetch(API_URL, requestOptions)
+        .then(res => res.json())
+        .then(r => {
+            if(r.error){
+                messageElement.classList.add('error');
+                messageElement.textContent = r.error;
+            }
+            else if(r.success)
+                messageElement.textContent = r.success.trim();
+        })
+        .catch(error => {
             messageElement.classList.add('error');
-            messageElement.textContent = result.error;
-        } else if (result.success) {
-            messageElement.textContent = result.success.trim();
-        }
-    } catch (error) {
-        messageElement.classList.add('error');
-        messageElement.textContent = error.message;
-    } finally {
-        // Remove the loader after receiving the response
-        chatbox.removeChild(loader);
-        chatbox.scrollTo(0, chatbox.scrollHeight);
-    }
-}
+            messageElement.textContent = error;
+        })
+        .finally(() => {
+            // Remove the loader after receiving the response
+            chatbox.removeChild(loader);
+            chatbox.scrollTo(0, chatbox.scrollHeight);
+        });
 
+}
 function handleReturnToOpenedTab() {
     const userId = 'your_user_id';
     const chatId = localStorage.getItem('chatId');
