@@ -40,7 +40,7 @@ container.innerHTML = `
 // Create and append link elements for stylesheets
 const styleSheet1 = document.createElement('link');
 styleSheet1.rel = 'stylesheet';
-styleSheet1.href = '/static/css/styles.css';
+styleSheet1.href = 'https://etienne113.github.io/chatFlow.github.io/styles.css';
 document.head.appendChild(styleSheet1);
 
 const styleSheet2 = document.createElement('link');
