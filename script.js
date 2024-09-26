@@ -66,11 +66,11 @@ let userMessage = null
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem('loggedIn') === 'true') {
+    if (sessionStorage.getItem('loggedIn') === 'true') {
         loginForm.parentElement.style.display = 'none';
         chatInputArea.style.display = 'flex';
 
-        const email = localStorage.getItem('userEmail');
+        const email = sessionStorage.getItem('userEmail');
         const greeting = createChatLi(`Welcome back, ${email}!`, 'incoming');
         chatbox.appendChild(greeting);
         chatbox.scrollTo(0, chatbox.scrollHeight);
@@ -78,6 +78,15 @@ document.addEventListener('DOMContentLoaded', () => {
         loginForm.parentElement.style.display = 'flex';
         chatInputArea.style.display = 'none';
     }
+});
+
+loginForm.addEventListener('submit',  (event) => {
+    event.preventDefault();
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+     getTokenFromFlask(email, password);
 });
 
 const createChatLi = (message, className) => {
@@ -106,35 +115,24 @@ const getTokenFromFlask = (username, password) => {
     .then(response => response.json())
     .then(data => {
         if (data.access_token) {
-            localStorage.setItem('accessToken', data.access_token);
-            localStorage.setItem('loggedIn', 'true');
-            localStorage.setItem('userEmail', username);
+            sessionStorage.setItem('accessToken', data.access_token);
+            sessionStorage.setItem('loggedIn', 'true');
+            sessionStorage.setItem('userEmail', username);
 
             loginForm.parentElement.style.display = 'none';
             chatInputArea.style.display = 'flex';
 
-            const greeting = createChatLi(`You have successfully logged in`, 'incoming');
-            chatbox.appendChild(greeting);
-            chatbox.scrollTo(0, chatbox.scrollHeight);
         } else {
             alert(data.error);
         }
     })
     .catch(error => {
         alert('Error fetching token.');
-        localStorage.removeItem('loggedIn');
+        sessionStorage.removeItem('loggedIn');
     });
 };
 
 
-loginForm.addEventListener('submit',  (event) => {
-    event.preventDefault();
-
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-     getTokenFromFlask(email, password);
-});
 
 function generateTabId(userId) {
     return `${userId}_${Math.random().toString(36).substring(2, 15)}`;
@@ -160,7 +158,7 @@ function notifyServerAboutNewTab(chatElement) {
     formData.append('user_id', userId);
     formData.append('chatId', chatId);
 
-    const accessToken = localStorage.getItem('accessToken');
+    const accessToken = sessionStorage.getItem('accessToken');
 
     const requestOptions = {
         method: 'POST',
@@ -228,3 +226,25 @@ chatbotToggler.addEventListener('click', () => {
     const rotateDeg = document.body.classList.contains('show-chatbot') ? 90 : 0;
     chatbotToggler.style.transform = `rotate(${rotateDeg}deg)`;
 });
+
+function showLogingForm(){
+     loginForm.parentElement.style.display = 'flex';
+     chatInputArea.style.display = 'none';
+}
+        const reloadTime = 480 * 60 * 1000; // 8 hours
+        const warningTime = reloadTime - 28500000;    // 10 mins before reloadtime
+ function notifyAndRelogIn() {
+            alert("You will need to reauthenticate in 10 minutes.");
+
+            setTimeout(function() { // For the App service itself
+                if(window.location.href === 'https://chatflow--dev-test.azurewebsites.net/chatbot'){
+                    sessionStorage.clear()
+                    location.reload()
+                }
+                else {
+                    sessionStorage.clear()
+                    showLogingForm()
+                }
+            }, reloadTime);
+        }
+setTimeout(notifyAndRelogIn, warningTime);
